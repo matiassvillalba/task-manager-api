@@ -46,3 +46,20 @@ def get_task(task_id: int):
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Task with ID {task_id} not found",
     )
+
+
+@app.put(
+    "/tasks/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK
+)
+def update_task(task_id: int, updated_task: TaskCreate):
+    for task in tasks_db:
+        if task["id"] == task_id:
+            task["title"] = updated_task.title
+            task["description"] = updated_task.description
+            task["completed"] = updated_task.completed
+            return task
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Task with ID {task_id} not found",
+    )
